@@ -143,7 +143,7 @@ const App = () => {
     useEffect(() => {
         updateConfigsData({ loading: true })
         fetchAllLogs();
-    }, [location.search]);
+    }, [location]);
 
 
     useEffect(() => {

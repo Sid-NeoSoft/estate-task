@@ -27,6 +27,10 @@ const Filters = ({
     toDate,
     updateFiltersData,
 }) => {
+    const resetDisabled = logId.trim() === "" && applicationId.trim() === "" && actionType === "" &&
+        applicationType === "" && fromDate === "" && toDate === "";
+    const filterDiabled = logId.trim() !== "" || applicationId.trim() !== "" || actionType !== "" ||
+        applicationType !== "" || fromDate !== "" || toDate !== "";
     return (
         <>
             <Box sx={styles.wrapper}>
@@ -69,9 +73,22 @@ const Filters = ({
                     onChange={(e) => updateFiltersData({ toDate: e.target.value })}
                 />
             </Box>
-            <Box sx={{ ...styles.wrapper, justifyContent: 'end', m: 1 }}>
-                <Button variant="outlined" sx={{ mr: 1 }} onClick={onReset}>Reset</Button>
-                <Button variant="outlined" onClick={onFilterApply}>Apply Filters</Button>
+            <Box sx={{ ...styles.wrapper, justifyContent: "end", m: 1 }}>
+                <Button
+                    disabled={resetDisabled}
+                    onClick={onReset}
+                    sx={{ mr: 1 }}
+                    variant="outlined"
+                >
+                    Reset
+                </Button>
+                <Button
+                    disabled={!filterDiabled}
+                    variant="outlined"
+                    onClick={onFilterApply}
+                >
+                    Apply Filters
+                </Button>
             </Box>
         </>
     );
