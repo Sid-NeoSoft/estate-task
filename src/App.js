@@ -52,6 +52,15 @@ const App = () => {
         updateLogsData(orderBy(currentData, [orderByCol], [sortOrder]));
     }
 
+    const getQueryParams = () => {
+        const queryParams = new URLSearchParams(location.search);
+        let obj = {};
+        Object.keys(defaultTableFilters).forEach((val) => {
+            obj = { ...obj, [val]: queryParams.get(val) || '' }
+        })
+        return obj;
+    }
+
     const fetchAllLogs = async () => {
         const data = await axios.get(
             "https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f"
@@ -70,11 +79,7 @@ const App = () => {
             actionTypes: ['', ...new Set(actionTypes)],
             applicationTypes: ['', ...new Set(applicationTypes)]
         })
-        const queryParams = new URLSearchParams(location.search);
-        let obj = {};
-        Object.keys(defaultTableFilters).forEach((val) => {
-            obj = { ...obj, [val]: queryParams.get(val) || '' }
-        })
+        const obj = getQueryParams();
         const newLogs = getFilteredData(obj, allLogs);
         updateFiltersData(obj);
         updateDefaultData(allLogs);
@@ -88,7 +93,7 @@ const App = () => {
         nonEmptyValue.forEach((val, ix) => {
             search += ix === 0 ? `${val}=${config[val]}` : `&${val}=${config[val]}`
         })
-        history.replace({ search: onReset ? '' : search })
+        history.push({ search: onReset ? '' : search })
     }
 
     const getFilteredData = (filters, data = defaultData) => {
@@ -99,7 +104,11 @@ const App = () => {
             newLogs = newLogs.filter((curLog) =>  {
                 let status = true;
                 nonEmptyValue.forEach((val) => {
-                    status = status && (`${curLog[val]}` === `${(filters[val] || '').trim()}`)
+                    if (val === 'logId' || val === 'applicationId') {
+                        status = status && (`${curLog[val]}`.includes(`${(filters[val] || '').trim()}`))
+                    } else {
+                        status = status && (`${curLog[val]}` === `${(filters[val] || '').trim()}`)
+                    }
                 })
                 return status;
             });
@@ -132,8 +141,9 @@ const App = () => {
     }
 
     useEffect(() => {
+        updateConfigsData({ loading: true })
         fetchAllLogs();
-    }, []);
+    }, [location.search]);
 
 
     useEffect(() => {
