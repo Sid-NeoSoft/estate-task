@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { orderBy } from "lodash";
 import { Pagination } from "@mui/material";
 import { Box } from "@mui/system";
-import axios from "axios";
 import DataTable from "./containers/DataTable";
 import Filters from "./containers/Filters";
 import "./App.css";
@@ -62,22 +61,23 @@ const App = () => {
     }
 
     const fetchAllLogs = async () => {
-        const data = await axios.get(
+        const res = await fetch(
             "https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f"
         );
-        const allLogs = data.data.result.auditLog;
-        let actionTypes = [], applicationTypes = [];
+        const data = await res.json();
+        const allLogs = data.result.auditLog;
+        let actionTypes = new Set(), applicationTypes = new Set();
         allLogs.forEach(({ actionType, applicationType }) => {
             if (actionType !== null) {
-                actionTypes.push(actionType);
+                actionTypes.add(actionType);
             }
             if (applicationType !== null) {
-                applicationTypes.push(applicationType);
+                applicationTypes.add(applicationType);
             }
         });
         updateDropDowns({
-            actionTypes: ['', ...new Set(actionTypes)],
-            applicationTypes: ['', ...new Set(applicationTypes)]
+            actionTypes: ['', ...actionTypes],
+            applicationTypes: ['', ...applicationTypes]
         })
         const obj = getQueryParams();
         const newLogs = getFilteredData(obj, allLogs);

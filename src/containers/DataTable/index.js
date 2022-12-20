@@ -95,6 +95,7 @@ const DataTable = ({
                                     {name}
                                     {orderByCol === dataKey && (
                                         <Box
+                                            aria-label={sortOrder}
                                             component="span"
                                             sx={tableStyles.arrow}
                                         >

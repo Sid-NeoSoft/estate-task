@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
-import Dropdown from "../components/Dropdown";
-import TextBox from "../components/TextBox";
+import Dropdown from "../../components/Dropdown";
+import TextBox from "../../components/TextBox";
 
 const styles = {
     wrapper: {
@@ -51,7 +51,7 @@ const Filters = ({
                     onChange={(e) => updateFiltersData({ actionType: e.target.value })}
                 />
                 <Dropdown
-                    label="Application Type"
+                    label="Application Types"
                     options={applicationTypes}
                     value={applicationType}
                     onChange={(e) => updateFiltersData({ applicationType: e.target.value })}
